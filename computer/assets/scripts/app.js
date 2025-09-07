@@ -1,14 +1,46 @@
 // Fichier contenant la logique de la calculatrice.
 
-// alert('This works!');
+// Le ; n'est requis que si 2 instructions se trouvent sur une même ligne de code(ex : const defaultResult = 0; let currentResult = defaultResult;).
+// alert('This works!')
 
-// let currentResult = 0 // Déclarer une variable sans l'initialiser : let currentResult;
+// let currentResult = 0 // Déclarer une variable sans l'initialiser : let currentResult
 const defaultResult = 0
-let currentResult = defaultResult // Erreur : Uncaught TypeError: Assignment to constant variable.
+let currentResult = defaultResult // En réalité, la valeur contenue dans currentResult est une copie de la constante defaultResult dont sa valeur pourra être modifiée (car ce conteneur de donnée currentResult est une variable), la constante originale ne le sera pas.
 
-currentResult = currentResult + 10 // Le côté droit est exécuté en 1°. Le côté gauche écrase donc la valeur initiale de currentResult avec celle de l'addition.
+// Une fonction peut être définie après son appel/invocation car JS lit tout le fichier avant de l'exécuter.
+// Ici : portée globale.
+// function add(num1, num2) {
+//     // Ici : portée de la fonction, result n'a pas de portée globale, seulement locale.
+//     const result = num1 + num2
+//     // alert(`The result is ${result}`)
+//     return result
+// } // Pas de ; après une paire d'accolades.
 
-let calculationDescription = '(' + currentResult + ' + 10) * 3 / 2 - 1'
+// add(1, 2)
+// add(4, 5)
 
-outputResult(currentResult, calculationDescription)
+// defaultResult = (currentResult + 10) * 3 / 2 -1 // Erreur : Uncaught TypeError: Assignment to constant variable.
+// currentResult = (currentResult + 10) * 3 / 2 -1  // Le côté droit est exécuté en 1°. Le côté gauche écrase donc la valeur initiale de currentResult avec celle de l'addition.
+// currentResult = add(1, 2)
 
+// let calculationDescription = `(${defaultResult} + 10)
+//                             * 3 / 2 - 1` // Les retours de ligne sont effectués par défaut dans un template.
+// let errorMessage = 'An error \n' +
+//                     'occured!' // Dans une string classique, nécessité d'ajouter \n pour un retour de ligne.
+                    // Une string doit toujours être écrite sur une seule ligne car sinon, JS ne trouve pas le guillemet fermant et retourne une erreur.
+
+// On veut dire au navigateur ce qu'il faut exécuter lors d'un clic sur le bouton. Le code est analysé par le navigateur. En ajoutant le listener et si la fonction add était passée en argument du listener avec les parenthèses et les arguments dedans, la fonction add() serait appelée (au moment de l'exécution du script) mais ce n'est pas l'idée. En réalité, il faudrait plutôt lui dire de garder en tête que cette fonction devra être exécutée lorsque le bouton sera cliqué > Donc ne PAS mettre les PARENTHESES, juste le nom de la fonction. Ceci dit à JS que quand l'événement du clic survient, de jetter un oeil à la déclaration de la fonction avec le nom indiqué et de l'exécuter à ce moment précis : Différencier le moment d'exécution du script et le moment où doit être exécutée la fonction.
+// addBtn.addEventListener('click', add(1, 2)) // MAUVAISE FACON. 
+
+addBtn.addEventListener('click', add)
+
+// Mais qu'en est-il des arguments à passer à add() ? Il faut revoir la fonction :
+function add() {
+    // La fonction n'interagit plus avec des variables locales mais avec des globales.
+    // Ici, un nombre (currentResult) et une string (userInput.value). Par sécurité, JS transforme currentResult en string pour la concaténer avec userInput.value (ex : si 4 + 5 > 45 au lieu de 9).
+    currentResult = currentResult + userInput.value // /!\ userInput.value est de type string car tout ce que l'utilisateur soumettra, le JS du navigateur l'enverra sous forme de string.
+    outputResult(currentResult, '')
+}
+
+// Mais en appuyant sur le bouton, cette fonction n'est pas exécutée (seulement lors de l'exécution du script) > Il faut l'intégrer dans la fonction add().
+// outputResult(currentResult, calculationDescription)
