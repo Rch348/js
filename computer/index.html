@@ -10,6 +10,8 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="assets/styles/app.css" />
+    <script src="assets/scripts/vendor.js" defer></script> <!-- defer VS async : defer garantit l'exécution de vendor.js avant app.js, pas le cas d'async. -->
+    <script src="assets/scripts/app.js" defer></script> <!-- async est une solution pour un script autonome ne dépendant pas du contenu HTML. -->
   </head>
   <body>
     <header>
@@ -29,8 +31,7 @@
       <h2 id="current-calculation" style="white-space: pre;">0</h2> <!-- style="white-space: pre;" : autorise les sauts de lignes éventuels dans une template string. -->
       <h2>Result: <span id="current-result">0</span></h2>
     </section>
-    <script src="assets/scripts/vendor.js"></script>
-    <script src="assets/scripts/app.js"></script>
-    <script src="assignment.js"></script>
+    <!-- <script src="assets/scripts/vendor.js"></script>
+    <script src="assets/scripts/app.js"></script> -->
   </body>
 </html>

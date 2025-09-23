@@ -3,6 +3,20 @@
 // Le ; n'est requis que si 2 instructions se trouvent sur une même ligne de code(ex : const defaultResult = 0; let currentResult = defaultResult;).
 // alert('This works!')
 
+/**
+ * Valeurs spéciales :
+ * - undefined : valeur par défaut des variables non initialisées ou si aucun élément n'est créé.   |
+ * - null : n'est pas une valeur par défaut, utilisé pour reset ou supprimer une variable.          |-> Types pour les variables vides.
+ * - NaN : ~ erreur si un calcul ou autre n'inclut pas de nombre.                                   => Pas un type.
+ */
+
+/**
+ * TypeOf :
+ * typeof [1, 2, 3] // Renvoie "object" car les arrays sont considérés en tant que tels.
+ * typeof null // Renvoie "object" ????
+ * typeof NaN // Renvoie "number".
+ */
+
 // let currentResult = 0 // Déclarer une variable sans l'initialiser : let currentResult
 const defaultResult = 0
 let currentResult = defaultResult // En réalité, la valeur contenue dans currentResult est une copie/référence de la constante defaultResult dont sa valeur pourra être modifiée (car ce conteneur de donnée currentResult est une variable), la constante originale ne le sera pas.
@@ -46,43 +60,90 @@ function createAndWriteOutput (operator, resultBeforeCalc, calcNumber) {
     outputResult(currentResult, calcDescription)
 }
 
+function writeLog (
+    operationIdentifier, 
+    prevResult, 
+    operationNumber, 
+    newResult
+) {
+    const logEntry = {
+        operation: operationIdentifier,
+        previousResult: prevResult,
+        number: operationNumber,
+        result: newResult,
+    }
+    // logEntries = [enteredNumber] // Idem .push()
+    logEntries.push(enteredNumber) // Ajoute un nouvel élément à l'array (si des éléments sont déjà présents, l'ajoute à la fin).
+    console.log(logEntry.operation) // Notation . : dit à JS qu'il faut accéder dans l'objet précédant le . et à l'une de ses propriétés suivant le .
+    console.log(logEntries[0])
+}
+
+function calculateResult(calculationType) {
+    const enteredNumber = getUserNumInput() // Donnera la 2° valeur de l'opération saisie âr l'utilisateur.
+    // En général, ce type de fonction est placé au début pour éviter d'exécuter du code pour rien.
+    if (
+        calculationType !== 'ADD' &&
+        calculationType !== 'SUBSTRACT' &&
+        calculationType !== 'MULTIPLY' &&
+        calculationType !== 'DIVIDE' ||
+        // enteredNumber === 0
+        !enteredNumber
+    ) {
+        return
+    }
+
+    // Cette fonction revient au même que celle du dessus mais n'est pas la + opti car contiendrait trop de code.
+    // if (
+    //     calculationType !== 'ADD' ||
+    //     calculationType !== 'SUBSTRACT' ||
+    //     calculationType !== 'MULTIPLY' ||
+    //     calculationType !== 'DIVIDE'
+    // ) {
+    // La fonction n'interagit plus avec des variables locales mais avec des globales.
+    const initialResult = currentResult // Réf. à la 1° valeur/résultat de l'opération.
+    let mathOperator
+    if (calculationType === 'ADD') {
+        // Ici, un nombre (currentResult) et une string (userInput.value). Par sécurité et parcequ'il ne sait pas s'il doit faire l'un ou l'autre, JS transforme currentResult en string pour la concaténer avec userInput.value (ex : si 4 + 5 > 45 au lieu de 9). 
+        // currentResult = currentResult + userInput.value // /!\ userInput.value est de type string car tout ce que l'utilisateur soumettra, le JS du navigateur l'enverra sous forme de string.
+        // parseInt() fonctionne juste avec les entiers, pas avec les décimaux > parseFloat().
+        currentResult += enteredNumber // Effectue l'addition.
+        // ++currentResult // Mettre l'opérateur devant la variable permet de retourner la nouvelle valeur après l'incrément (ex : Si currentResult était = à 0, retourne 1).
+        // currentResult++ // Retourne la valeur avant l'incrément(ex : Si currentResult était = à 0, retourne 0 ).
+        mathOperator = '+'
+    } else if (calculationType === 'SUBSTRACT') {
+        currentResult -= enteredNumber
+        mathOperator = '-'
+    } else if (calculationType === 'MULTIPLY') {
+        currentResult *= enteredNumber
+        mathOperator = '*'
+    } else if (calculationType === 'DIVIDE') {
+        currentResult /= enteredNumber
+        mathOperator = '/'
+    }
+
+    createAndWriteOutput(mathOperator, initialResult, enteredNumber) // Affiche le résultat.
+    writeLog(calculationType, initialResult, enteredNumber, currentResult)
+    // }
+}
+
 // Mais qu'en est-il des arguments à passer à add() ? Il faut revoir la fonction :
 function add() {
-    // La fonction n'interagit plus avec des variables locales mais avec des globales.
-    const enteredNumber = getUserNumInput() // Donnera la 2° valeur de l'opération saisie âr l'utilisateur.
-    const initialResult = currentResult // Réf. à la 1° valeur/résultat de l'opération.
-    // Ici, un nombre (currentResult) et une string (userInput.value). Par sécurité et parcequ'il ne sait pas s'il doit faire l'un ou l'autre, JS transforme currentResult en string pour la concaténer avec userInput.value (ex : si 4 + 5 > 45 au lieu de 9). 
-    // currentResult = currentResult + userInput.value // /!\ userInput.value est de type string car tout ce que l'utilisateur soumettra, le JS du navigateur l'enverra sous forme de string.
-    // parseInt() fonctionne juste avec les entiers, pas avec les décimaux > parseFloat().
-    currentResult += enteredNumber // Effectue l'addition.
-    // ++currentResult // Mettre l'opérateur devant la variable permet de retourner la nouvelle valeur après l'incrément (ex : Si currentResult était = à 0, retourne 1).
-    // currentResult++ // Retourne la valeur avant l'incrément(ex : Si currentResult était = à 0, retourne 0 ).
-    createAndWriteOutput('+', initialResult, enteredNumber) // Affiche le résultat.
-    logEntries = [enteredNumber]
+    calculateResult('ADD')
 }
 
 // Mais en appuyant sur le bouton, cette fonction n'est pas exécutée (seulement lors de l'exécution du script) > Il faut l'intégrer dans la fonction add().
 // outputResult(currentResult, calculationDescription)
 
 function subtract () {
-    const enteredNumber = getUserNumInput()
-    const initialResult = currentResult
-    currentResult -= enteredNumber // Soustrait les 2 entiers de ces 2 variables.
-    createAndWriteOutput('-', initialResult, enteredNumber) // Affiche le résultat.
+    calculateResult('SUBSTRACT')
 }
 
 function multiply () {
-    const enteredNumber = getUserNumInput()
-    const initialResult = currentResult
-    currentResult *= enteredNumber
-    createAndWriteOutput('*', initialResult, enteredNumber) // Affiche le résultat.
+    calculateResult('MULTIPLY')
 }
 
 function divide () {
-    const enteredNumber = getUserNumInput()
-    const initialResult = currentResult
-    currentResult /= enteredNumber
-    createAndWriteOutput('/', initialResult, enteredNumber) // Affiche le résultat.
+    calculateResult('DIVIDE')
 }
 
 addBtn.addEventListener('click', add)
