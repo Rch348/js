@@ -12,24 +12,51 @@ const LOG_EVENT_MONSTER_ATTACK = 'MONSTER_ATTACK';
 const LOG_EVENT_PLAYER_HEAL = 'PLAYER_HEAL';
 const LOG_EVENT_GAME_OVER = 'GAME_OVER';
 
-// Fonction native JS/navigateur pour permettre la saisie utilisateur.
-const enteredValue = prompt(
-    'Maximum life for you and the monster.', // Texte affiché.
-    '100', // Placeholder du champ;
-);
-// const enteredValue = parseInt(prompt('Maximum life for you and the monster.', '100'));
+function getMaxLifeValues() {
+    // Fonction native JS/navigateur pour permettre la saisie utilisateur.
+    // const enteredValue = parseInt(prompt('Maximum life for you and the monster.', '100'));
+    const enteredValue = prompt(
+        'Maximum life for you and the monster.', // Texte affiché.
+        '100', // Placeholder du champ;
+    );
+
+    const parsedValue = parseInt(enteredValue);
+    if (isNaN(parsedValue) || parsedValue <= 0) {
+        throw { message: 'Invalid user input, not a number!' };
+    }
+    return parsedValue;
+}
 
 // Ces variables ne sont pas globales car leur valeur peut être modifiée.
-let chosenMaxLife = parseInt(enteredValue);
+let chosenMaxLife;
 
-if (isNaN(chosenMaxLife) || chosenMaxLife <= 0) {
-    chosenMaxLife = 100; 
+// Try-catch sert typiquement à gérer les erreurs de réseau.
+// Grâce au throw de la fonction getMaxLifeValues(), ce try-catch n'est pas indispensable.
+try {
+    // Le try contient le code pouvant jeter une erreur.
+    chosenMaxLife = getMaxLifeValues();
+// Si une erreur se produit, le paramètre 'error' est l'objet (celui du throw de getMaxLifeValues()) qui sera créé pour la gérer.
+} catch (error) {
+    // Le catch contient la gestion d'erreur et le fallback logic.
+    console.log('ERROR: ', error);
+    // Fallback pour initialiser chosenMaxLife avec une valeur par défaut.
+    chosenMaxLife = 100;
+    // Pour informer l'utilisateur de ce qui ne va pas.
+    alert('You entered something wrong, default value of 100 was used.');
+    // Dans le cas où il faudrait envoyer l'erreur à notre serveur d'analyse, pour en être notifié par exemple.
+    // throw error; // L'erreur peut être envoyée une seconde fois mais arrête l'exécution du reste du script.
+// Il peut y avoir seulement try-finally sans le catch. 
+} finally { // S'exécutera toujours, peu importe ce qu'il se passe. Utile au cas où il faudrait gérer une erreur pouvant se produire dans le catch afin d'avoir du code propre ou pour éviter un rethrow qui arrêterait le script mais facultatif la plupart du temps car le fallback peut très bien être dans le catch.
+    // Le finallys contient le code de nettoyage...
+    chosenMaxLife = 100;
+    alert('You entered something wrong, default value of 100 was used.');
 }
 
 let currentMonsterHealth = chosenMaxLife;
 let currentPlayerHealth = chosenMaxLife;
 let hasBonusLife = true;
 let battleLog = [];
+let lastLogEntry;
 
 adjustHealthBars(chosenMaxLife);
 
@@ -248,11 +275,15 @@ function printLogHandler() {
 
     let i = 0;
     for (const logEntry of battleLog) {
-        console.log(`#${i}`); // Affiche tous les logs (comme le for juste avant).
-        for (const key in logEntry) {
-            // console.log(key); // Affiche toutes les clés de l'objet logEntry.
-            // console.log(logEntry[key]); // Idem.
-            console.log(`${key} => ${logEntry[key]}`);
+        if (!lastLogEntry && lastLogEntry !== 0 || lastLogEntry < i) {
+            console.log(`#${i}`); // Affiche tous les logs (comme le for juste avant).
+            for (const key in logEntry) {
+                // console.log(key); // Affiche toutes les clés de l'objet logEntry.
+                // console.log(logEntry[key]); // Idem.
+                console.log(`${key} => ${logEntry[key]}`);
+            }
+            lastLogEntry = i;
+            break; // Peut être utilisé dans tous les types de boucle. 
         }
         i++;
     }
