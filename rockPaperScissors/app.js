@@ -100,7 +100,7 @@ const getWinner = (
 
 // startGameBtn.addEventListener('click', start); // Référence à l'expression de fonction stockée dans la variable start.
 // En passant cette fonction anonyme en argument à la fonction addEventListener(), on passe un pointeur d'une fonction (listener) à une autre fonction (anonyme).
-startGameBtn.addEventListener('click', () => { // Cette fonction anonyme est une fonction de callback.
+startGameBtn.addEventListener('click', () => { // Cette fonction anonyme est une fonction de callback car elle est appelée sans nécessité de le faire soit même (ici, elle est appelée par le listener).
     if (gameIsRunning) { // Vérifie si le jeu est déjà lancé.
         return;
     }
