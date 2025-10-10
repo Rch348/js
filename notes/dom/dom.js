@@ -12,6 +12,10 @@
  */
 
 /**
+ * console.dir() permet d'accéder aux propriétés/méthodes de l'objet passé en paramètre.
+ */
+
+/**
  * Requêter les éléments :
  * - querySelector() & getElementById() : sélectionnent 1 élément à la fois, retournent un seul élément > référence direct aux éléments du DOM.
  *  . querySelector() : prend un sélecteur/pseudo sélecteur CSS ('tag', '#', '.') et retournera toujours le 1° élément correspondant de la page car peut cibler plusieurs éléments en réalité.
@@ -24,6 +28,36 @@
  *  . Elements (type de node) : nodes/noeuds créés à partir des tags HTML rendus, sans le texte à l'intérieur. Possèdents leurs propres propriétés/méthodes.
  *  > Pas d'interaction avec les propriétés/méthodes des text nodes ou element nodes car il faudra ajouter/modifier/supprimer des tags HTML et modifier le texte à l'intérieur des tags via le child content qui est le texte de cet élément.
  */
+
+/**
+ * TRAVERSEE DU DOM :
+ * - Child :
+ *  . Enfant direct d'un noeud ou élément.
+ *  . Ex. : <div>
+ *             <p><em>test</em></p> // Le tag p est l'enfant direct du tag div mais pas le tag em qui est celui du tag p.
+ *          </div>
+ * - Descendant :
+ *  . Enfant direct ou indirect d'un noeud ou élément.
+ *  . Dans l'ex. précédant, les tags p & em sont des descendants du tag div.
+ * - Parent (!Child):
+ *  . Parent direct d'un noeud ou élément.
+ *  . Dans le 1° ex., le tag div est le parent du tag p mais pas celui du tag em.
+ * - Ancêtre (!Descendant) :
+ *  . Parent direct ou indirect d'un noeud ou élément.
+ *  . Dans le 1° ex., le tag div est l'ancêtre des tags p & em.
+ * 
+ * - children : accéde aux éléments enfants mais pas aux noeuds de texte !== childNodes.
+ * - childNodes : accède aux noeuds d'élément, donc aux éléments enfants + noeuds de texte.
+ *  > Retourne une nodeList et possède une propriété data contenant une string avec un retour de ligne et un certain nombre d'espace correspondant à celui des indentations nécessaires le parent & l'enfant.
+ * - Ex. de sélection du 1° ou dernier tag li d'une liste :
+ *  const ul = document.querySelector('ul');
+ *  ul.firstElementChild // Sélectionne le 1°.
+ *  ul.lastChild         // Sélectionne le dernier.
+ */
+
+
+
+
 
 /**
  * Here's a summary of the various methods you got to reach out to DOM elements (note: you can only query for element nodes).
@@ -68,4 +102,10 @@
     More information: https://developer.mozilla.org/en-US/docs/Web/API/Element/getElementsByTagName
 
     There also is the getElementsByName() method which really isn't used commonly (https://developer.mozilla.org/en-US/docs/Web/API/Document/getElementsByName).
+ */
+
+/**
+ * PROPRIETES DU DOM :
+ * - Dans les objets du DOM, la propriété style permet d'accéder aux règles CSS. /!\ Le nom de ces règles ne comportent pas de '-' mais sont transformés en camelCase.
+ * 
  */
