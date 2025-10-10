@@ -61,9 +61,9 @@ function createAndWriteOutput (operator, resultBeforeCalc, calcNumber) {
 }
 
 function writeLog (
-    operationIdentifier, 
-    prevResult, 
-    operationNumber, 
+    operationIdentifier,
+    prevResult,
+    operationNumber,
     newResult
 ) {
     const logEntry = {
@@ -74,13 +74,13 @@ function writeLog (
     }
     // logEntries = [enteredNumber] // Idem .push()
     logEntries.push(enteredNumber) // Ajoute un nouvel élément à l'array (si des éléments sont déjà présents, l'ajoute à la fin).
-    console.log(logEntry.operation) // Notation . : dit à JS qu'il faut accéder dans l'objet précédant le . et à l'une de ses propriétés suivant le .
+    console.log(logEntry.operation) // Notation . : dit à JS qu'il faut accéder à l'objet précédant le . et à l'une de ses propriétés suivant le .
     console.log(logEntries[0])
 }
 
 function calculateResult(calculationType) {
     const enteredNumber = getUserNumInput() // Donnera la 2° valeur de l'opération saisie âr l'utilisateur.
-    // En général, ce type de fonction est placé au début pour éviter d'exécuter du code pour rien.
+    // En général, cette condition est placé au début pour éviter d'exécuter du code pour rien.
     if (
         calculationType !== 'ADD' &&
         calculationType !== 'SUBSTRACT' &&
@@ -146,7 +146,33 @@ function divide () {
     calculateResult('DIVIDE')
 }
 
-addBtn.addEventListener('click', add)
-subtractBtn.addEventListener('click', subtract)
-multiplyBtn.addEventListener('click', multiply)
-divideBtn.addEventListener('click', divide)
+function calculate(operation) {
+    const enteredNumber = getUserNumInput();
+    const initialResult = currentResult;
+    let operator;
+    // Un switch case peut aussi être utilisé à la place.
+    if (operation === 'ADD') {
+        currentResult += enteredNumber;
+        operator = '+';
+    } else if (operation === 'SUBSTRACT') {
+        currentResult -= enteredNumber;
+        operator = '-';
+    } else if (operation === 'MULTIPLY') {
+        currentResult *= enteredNumber;
+        operator = '*';
+    } else {
+        currentResult /= enteredNumber;
+        operator = '/';
+    }
+    createAndWriteOutput(operator, initialResult, enteredNumber);
+    writeToLog(operation, initialResult, enteredNumber, currentResult);
+}
+
+// addBtn.addEventListener('click', add)
+// subtractBtn.addEventListener('click', subtract)
+// multiplyBtn.addEventListener('click', multiply)
+// divideBtn.addEventListener('click', divide)
+addBtn.addEventListener('click', calculate.bind(this, 'ADD'))
+subtractBtn.addEventListener('click', calculate.bind(this, 'SUBSTRACT'))
+multiplyBtn.addEventListener('click', calculate.bind(this, 'MULTIPLY'))
+divideBtn.addEventListener('click', calculate).bind(this, 'DIVIDE')

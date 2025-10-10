@@ -21,10 +21,53 @@
  * - Utilisé dans le corps de la fonction.
  * - Donne accès à un genre d'array objet avec tous les arguments passés à la fonction.
  */ 
-const sumUp = function() {
-    let sum = 0;
-    for (const num of arguments) { // Ne pas utiliser.
-        sum += num;
+// const sumUp = function(resultHandler, ...nums) {
+//     let sum = 0;
+//     for (const num of arguments) { // Ne pas utiliser.
+//         sum += num;
+//     }
+//     resultHandler(sum, 'The result is: ');
+// };
+
+// const substractUp = function(resultHandler, ...nums) {
+//     let difference = 0;
+//     for (const num of nums) {
+//         difference -= num;
+//     }
+//     resultHandler(difference, 'The result is: ');
+// };
+
+// Le paramètre messageText doit être en 1° position puisque c'est le 2° argument passé à la méthode bind appelée sur la fonction lors de son appel (cf. appel + bas).
+const handleResult = (messageText, result) => {
+    alert(messageText + ' ' + result);
+};
+
+const combine = (resultHandler, operation, ...nums) => {
+    const validateNum = num => {
+        return isNaN(num) ? 0 : num;
+    };
+
+    let result = 0;
+    for (const num of nums) {
+        if (operation === 'ADD') {
+            result += validateNum(num);
+        } else {
+            result -= validateNum(num);
+        }
     }
-    return sum;
-}
+    resultHandler(result); // Avec la méthode bind(), le 2° argument passé (la string) sera automatiquement passé à resultHandler dans combine, avant result.
+};
+
+// sumUp(handleResult, 1, 5, 'abcd', -3, 6, 10);
+// sumUp(handleResult, 1, 2, 3, 4, 5);
+// substractUp(handleResult, 1, 10, 15, 20);
+combine(handleResult.bind(this, 'Result after adding all numbers is: '), 'ADD', 1, 5, 'abcd', -3, 6, 10); // La méthode .bind() permet de créer une nouvelle référence à la fonction (handleResult) qui la renvoie, et sera préconfigurée en fonction des arguments qu'elle recevra. N'exécute pas la fonction directement comme si seules des parenthèses étaient ajoutées, mais permet de la préparer pour une future exécution (ici pour personnaliser le message du résultat en fonction de l'opération effectuée).
+combine(handleResult.bind(this, 'Result after adding all numbers is: '), 'ADD', 1, 2, 3, 4, 5);
+combine(handleResult.bind(this, 'Result after substracting all numbers is: '), 'SUBSTRACT', 1, 10, 15, 20);
+
+/**
+ * Méthodes .call() & .apply() :
+ * - Similaires à .bind() > passage d'arguments à la fonction invoquant la méthode.
+ * - Appelle et exécute directement la fonction appelant la méthode !== .bind().
+ * 
+ */
